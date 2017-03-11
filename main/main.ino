@@ -146,7 +146,7 @@ void loop(void) {
               lcd.print("Balance: $");
               lcd.print(number);
               Serial.print("Card balance is "); Serial.print(number);
-              Serial.println("");
+              Serial.print("SEND");
             }
           }
           nfc.PrintHexChar(data, 16);
