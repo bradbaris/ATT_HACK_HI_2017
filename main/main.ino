@@ -30,44 +30,24 @@
 #define PN532_IRQ   (2)
 #define PN532_RESET (3)  // Not connected by default on the NFC Shield
 
+// Define color constants
 #define RED 0x1
-#define YELLOW 0x3
 #define GREEN 0x2
-#define TEAL 0x6
+#define YELLOW 0x3
 #define BLUE 0x4
 #define VIOLET 0x5
+#define TEAL 0x6
 #define WHITE 0x7
 
+// Declare LCD Shield and RFID Shield
 Adafruit_RGBLCDShield lcd = Adafruit_RGBLCDShield();
-
-// Uncomment just _one_ line below depending on how your breakout or shield
-// is connected to the Arduino:
-
-// Use this line for a breakout with a software SPI connection (recommended):
-// Adafruit_PN532 nfc(PN532_SCK, PN532_MISO, PN532_MOSI, PN532_SS);
-
-// Use this line for a breakout with a hardware SPI connection.  Note that
-// the PN532 SCK, MOSI, and MISO pins need to be connected to the Arduino's
-// hardware SPI SCK, MOSI, and MISO pins.  On an Arduino Uno these are
-// SCK = 13, MOSI = 11, MISO = 12.  The SS line can be any digital IO pin.
-//Adafruit_PN532 nfc(PN532_SS);
-
-// Or use this line for a breakout or shield with an I2C connection:
 Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
-
-#if defined(ARDUINO_ARCH_SAMD)
-// for Zero, output on USB Serial console, remove line below if using programming port to program the Zero!
-// also change #define in Adafruit_PN532.cpp library file
-   #define Serial SerialUSB
-#endif
 
 void setup(void) {
 
-  // Debugging output
+  // Start devices
   Serial.begin(115200);
-  // set up the LCD's number of columns and rows:
   lcd.begin(16, 2);
-
   nfc.begin();
 
   uint32_t versiondata = nfc.getFirmwareVersion();
@@ -75,13 +55,12 @@ void setup(void) {
     Serial.print("Didn't find PN53x board");
     while (1); // halt
   }
-  // Got ok data, print it out!
   Serial.print("Found chip PN5"); Serial.println((versiondata>>24) & 0xFF, HEX); 
   Serial.println(".");
   Serial.println("Firmware ver. "); Serial.print((versiondata>>16) & 0xFF, DEC); 
   Serial.print("."); Serial.println((versiondata>>8) & 0xFF, DEC);
   
-  // configure board to read RFID tags
+  // Configure board to read RFID tags
   nfc.SAMConfig();
   
   Serial.println("Waiting for an ISO14443A Card ...");
@@ -91,16 +70,14 @@ void setup(void) {
 
 }
 
-
 void loop(void) {
   uint8_t success;
   uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };  // Buffer to store the returned UID
   uint8_t uidLength;                        // Length of the UID (4 or 7 bytes depending on ISO14443A card type)
   char rfiduid[15];
 
-  // Wait for an ISO14443A type cards (Mifare, etc.).  When one is found
-  // 'uid' will be populated with the UID, and uidLength will indicate
-  // if the uid is 4 bytes (Mifare Classic) or 7 bytes (Mifare Ultralight)
+  // Wait for an ISO14443A type card. When one is found
+  // 'uid' will be populated with the UID. A 40byte uidLength indicates a Mifare Classic card.
   success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
   
   if (success) {
@@ -115,8 +92,7 @@ void loop(void) {
 
     if (uidLength == 4)
     {
-      // We probably have a Mifare Classic card ... 
-      Serial.println("Seems to be a Mifare Classic card (4 byte UID)");
+      Serial.println("Appears to be a Mifare Classic card (4 byte UID)");
     
       // Now we need to try to authenticate it for read/write access
       // Try with the factory default KeyA: 0xFF 0xFF 0xFF 0xFF 0xFF 0xFF
