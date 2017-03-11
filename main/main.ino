@@ -23,7 +23,6 @@
 #include <SPI.h>
 #include <Adafruit_PN532.h>
 #include <Adafruit_RGBLCDShield.h>
-#include <utility/Adafruit_MCP23017.h>
 
 // If using the breakout or shield with I2C, define just the pins connected
 // to the IRQ and reset lines.  Use the values below (2, 3) for the shield!
@@ -65,7 +64,7 @@ void setup(void) {
   
   Serial.println("Waiting for an ISO14443A Card ...");
   lcd.setBacklight(WHITE);
-  lcd.print("READER:ACTIVE");
+  lcd.print("SWIPE CARD");
   lcd.print("");
 
 }
@@ -86,9 +85,6 @@ void loop(void) {
     String str(rfiduid);
     nfc.PrintHex(uid, uidLength);
     lcd.setBacklight(YELLOW);
-    lcd.setCursor(0, 0);
-    lcd.print("CARD: " + str);
-    lcd.print("");
 
     if (uidLength == 4)
     {
@@ -115,8 +111,8 @@ void loop(void) {
         // memcpy(data, (const uint8_t[]){ 'a', 'd', 'a', 'f', 'r', 'u', 'i', 't', '.', 'c', 'o', 'm', 0, 0, 0, 0 }, sizeof data);
         
         // Write '20' to block 4 on the card
-        memcpy(data, (const uint8_t[]){ '1', '7', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, sizeof data);
-        success = nfc.mifareclassic_WriteDataBlock (4, data);
+        //memcpy(data, (const uint8_t[]){ '1', '7', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, sizeof data);
+        //success = nfc.mifareclassic_WriteDataBlock (4, data);
         
         // Try to read the contents of block 4
         success = nfc.mifareclassic_ReadDataBlock(4, data);
@@ -128,7 +124,7 @@ void loop(void) {
             lcd.setBacklight(GREEN);
             lcd.setCursor(0, 0);
             lcd.print("BRADFORD BARIS  ");
-            Serial.println("Card for BRADFORD BARIS");
+            Serial.println("NAME=Bradford Baris");
             char wat[] = { data[0], data[1] };
             int number = (int) strtol( wat, NULL, 16);
             (number < 3) ? number = 0 : number -= 3;
@@ -141,12 +137,13 @@ void loop(void) {
             if (number == 0) {
               lcd.setBacklight(RED);
               lcd.print("Insufficient $$");
-              Serial.println("Insufficient funds on card.");
+              Serial.println("FUNDS=NO");
             } else {
               lcd.print("Balance: $");
               lcd.print(number);
-              Serial.print("Card balance is "); Serial.print(number);
-              Serial.print("SEND");
+              Serial.print("BAL="); Serial.print(number);
+              Serial.println("");
+              Serial.println("SEND");
             }
           }
           nfc.PrintHexChar(data, 16);
