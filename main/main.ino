@@ -111,17 +111,44 @@ void loop(void) {
         lcd.setBacklight(GREEN);
         
         // If you want to write something to block 4 to test with, uncomment
-    // the following line and this text should be read back in a minute
-        //memcpy(data, (const uint8_t[]){ 'a', 'd', 'a', 'f', 'r', 'u', 'i', 't', '.', 'c', 'o', 'm', 0, 0, 0, 0 }, sizeof data);
-        // success = nfc.mifareclassic_WriteDataBlock (4, data);
-
+        // the following line and this text should be read back in a minute
+        // memcpy(data, (const uint8_t[]){ 'a', 'd', 'a', 'f', 'r', 'u', 'i', 't', '.', 'c', 'o', 'm', 0, 0, 0, 0 }, sizeof data);
+        
+        // Write '20' to block 4 on the card
+        memcpy(data, (const uint8_t[]){ '1', '7', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, sizeof data);
+        success = nfc.mifareclassic_WriteDataBlock (4, data);
+        
         // Try to read the contents of block 4
         success = nfc.mifareclassic_ReadDataBlock(4, data);
     
         if (success)
         {
-          // Data seems to have been read ... spit it out
-          Serial.println("Reading Block 4:");
+          // Data seems to have been read
+          if (str == "8BAD0ADD") {
+            lcd.setBacklight(GREEN);
+            lcd.setCursor(0, 0);
+            lcd.print("BRADFORD BARIS  ");
+            Serial.println("Card for BRADFORD BARIS");
+            char wat[] = { data[0], data[1] };
+            int number = (int) strtol( wat, NULL, 16);
+            (number < 3) ? number = 0 : number -= 3;
+            String balance = String(number, HEX);
+            wat[0] = balance[0];
+            wat[1] = balance[1];
+            memcpy(data, wat, 2);
+            success = nfc.mifareclassic_WriteDataBlock (4, data);
+            lcd.setCursor(0, 1);
+            if (number == 0) {
+              lcd.setBacklight(RED);
+              lcd.print("Insufficient $$");
+              Serial.println("Insufficient funds on card.");
+            } else {
+              lcd.print("Balance: $");
+              lcd.print(number);
+              Serial.print("Card balance is "); Serial.print(number);
+              Serial.println("");
+            }
+          }
           nfc.PrintHexChar(data, 16);
           Serial.println("");
       
