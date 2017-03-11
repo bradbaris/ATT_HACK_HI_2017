@@ -54,15 +54,14 @@ void setup(void) {
     Serial.print("Didn't find PN53x board");
     while (1); // halt
   }
-  Serial.print("Found chip PN5"); Serial.println((versiondata>>24) & 0xFF, HEX); 
-  Serial.println(".");
-  Serial.println("Firmware ver. "); Serial.print((versiondata>>16) & 0xFF, DEC); 
-  Serial.print("."); Serial.println((versiondata>>8) & 0xFF, DEC);
+  //Serial.print("Found chip PN5"); Serial.println((versiondata>>24) & 0xFF, HEX); 
+  //Serial.println("Firmware ver. "); Serial.print((versiondata>>16) & 0xFF, DEC); 
+  //Serial.print("."); Serial.println((versiondata>>8) & 0xFF, DEC);
   
   // Configure board to read RFID tags
   nfc.SAMConfig();
   
-  Serial.println("Waiting for an ISO14443A Card ...");
+  Serial.println("System running. Waiting for an ISO14443A Card ...");
   lcd.setBacklight(WHITE);
   lcd.print("SWIPE CARD");
   lcd.print("");
@@ -82,11 +81,12 @@ void loop(void) {
   if (success) {
     // Display some basic information about the card
     sprintf( rfiduid, "%02X%02X%02X%02X", uid[0], uid[1], uid[2], uid[3] );
+  
     String str(rfiduid);
     nfc.PrintHex(uid, uidLength);
     lcd.setBacklight(YELLOW);
-
-    if (uidLength == 4)
+                          // lol kludge
+    if (uidLength == 4 && str.indexOf("413035") == -1)
     {
       Serial.println("Appears to be a Mifare Classic card (4 byte UID)");
     
@@ -95,9 +95,9 @@ void loop(void) {
       Serial.println("Attempting to authenticate block 4 with default KEYA value");
       uint8_t keya[6] = { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF };
     
-    // Start with block 4 (the first block of sector 1) since sector 0
-    // contains the manufacturer data and it's probably better just
-    // to leave it alone unless you know what you're doing
+      // Start with block 4 (the first block of sector 1) since sector 0
+      // contains the manufacturer data and it's probably better just
+      // to leave it alone unless you know what you're doing
       success = nfc.mifareclassic_AuthenticateBlock(uid, uidLength, 4, 0, keya);
     
       if (success)
@@ -130,12 +130,6 @@ void loop(void) {
             lcd.print("YUKIO YAMAMOTO  ");
             Serial.println("NAME=Yukio Yamamoto");
           }
-          if (str == "0445D06ACA4881") {
-            lcd.print("AISIS ZANE      ");
-            Serial.println("NAME=Aisis Zane");
-            data[0] = '1';
-            data[1] = '7';
-          }
           char wat[] = { data[0], data[1] };
           int number = (int) strtol( wat, NULL, 16);
           (number < 3) ? number = 0 : number -= 3;
@@ -153,7 +147,6 @@ void loop(void) {
             lcd.print("Balance: $");
             lcd.print(number);
             Serial.print("BAL="); Serial.print(number);
-            Serial.println("");
             Serial.println("SEND");
           }
           nfc.PrintHexChar(data, 16);
@@ -174,11 +167,32 @@ void loop(void) {
           lcd.setBacklight(RED);
         }
       }
-      else
-      {
+    } else {
+      // lol massive kludge
+      if (str.indexOf("45D06A") != -1) {
+        lcd.setBacklight(GREEN);
+        lcd.setCursor(0, 0);
+        lcd.print("AISIS ZANE      ");
+        Serial.println("NAME=Aisis Zane");
+        int number = 50;
+        lcd.print("Balance: $50");
+        Serial.print("BAL=50");
+        Serial.println("SEND");
+        Serial.println("");
+    
+        // Wait a bit before reading the card again
+        delay(3000);
+        lcd.clear();
+        lcd.setBacklight(WHITE);
+        lcd.setCursor(0, 0);
+        lcd.print("READER:ACTIVE   ");
+        lcd.setCursor(0, 1);
+        lcd.print("                ");
+                
+      } else {
         Serial.println("Authentication failure!");
         lcd.setBacklight(RED);
-      }
+      }    
     }
   }
 }
