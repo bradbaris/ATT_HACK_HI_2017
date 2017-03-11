@@ -1,3 +1,6 @@
 [submodule "libraries/Adafruit-PN532"]
 	path = libraries/Adafruit-PN532
 	url = https://github.com/adafruit/Adafruit-PN532
+[submodule "libraries/Adafruit-RGB-LCD-Shield-Library"]
+	path = libraries/Adafruit-RGB-LCD-Shield-Library
+	url = https://github.com/adafruit/Adafruit-RGB-LCD-Shield-Library.git
