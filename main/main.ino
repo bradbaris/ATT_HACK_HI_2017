@@ -110,8 +110,8 @@ void loop(void) {
         // the following line and this text should be read back in a minute
         // memcpy(data, (const uint8_t[]){ 'a', 'd', 'a', 'f', 'r', 'u', 'i', 't', '.', 'c', 'o', 'm', 0, 0, 0, 0 }, sizeof data);
         
-        // Write '53' to block 4 on the card
-        // memcpy(data, (const uint8_t[]){ '3', '5', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, sizeof data);
+        // Write '255' to block 4 on the card
+        // memcpy(data, (const uint8_t[]){ 'f', 'f', 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, sizeof data);
         // success = nfc.mifareclassic_WriteDataBlock (4, data);
         
         // Try to read the contents of block 4
@@ -147,7 +147,9 @@ void loop(void) {
             lcd.print("Balance: $");
             lcd.print(number);
             Serial.print("BAL="); Serial.print(number);
+            Serial.println("");
             Serial.println("SEND");
+            Serial.println("");
           }
           nfc.PrintHexChar(data, 16);
           Serial.println("");
@@ -175,8 +177,10 @@ void loop(void) {
         lcd.print("AISIS ZANE      ");
         Serial.println("NAME=Aisis Zane");
         int number = 50;
+        lcd.setCursor(0, 1);
         lcd.print("Balance: $50");
         Serial.print("BAL=50");
+        Serial.println("");
         Serial.println("SEND");
         Serial.println("");
     
