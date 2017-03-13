@@ -10,6 +10,8 @@ Setup:
 2. Install the [Arduino IDE](https://www.arduino.cc/en/main/software)  
 3. Burn sketches to the Arduino  
 
+**See the sibling repo:** https://github.com/bradbaris/ATT_HACK_HI_2017_RPi2
+
 Notes:
 
 [1] https://github.com/adafruit/Adafruit-PN532/blob/master/examples/readMifare/readMifare.pde  
