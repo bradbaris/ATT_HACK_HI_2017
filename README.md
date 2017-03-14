@@ -1,3 +1,12 @@
+![](/art/demo.gif)  
+RFID reader in action
+
+![](/art/slack_screenshot.png)
+![](/art/dashboard_concept.png)  
+Arduino output in Slack, and dashboard art
+
+# Description
+
 Standard assembly of an Arduino Uno (WiFi, this case), Adafruit PN532 RFID/NFC reader/writer shield, and an Adafruit RGB LCD shield. Shields for convenience and speed, because we are noob. We used [totally-insecure](https://en.wikipedia.org/wiki/MIFARE#Security_of_MIFARE_Classic.2C_MIFARE_DESFire_and_MIFARE_Ultralight) MIFARE 1K cards to play with. Much of the basic structure of MIFARE 1K cards can be learned via the [`mifareclassic_memdump`](https://github.com/adafruit/Adafruit-PN532/blob/master/examples/mifareclassic_memdump/mifareclassic_memdump.pde) sketch in the Adafruit PN532 library, and the [MIFARE byte layout diagram](https://en.wikipedia.org/wiki/MIFARE#/media/File:MiFare_Byte_Layout.png).
 
 Setup:
