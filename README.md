@@ -1,5 +1,5 @@
 ![](/art/demo.gif)  
-RFID reader in action (via @aisis)  
+RFID reader in action (via [@aisis](https://www.github.com/aisis))  
 
 ![](/art/slack_screenshot.png)
 ![](/art/dashboard_concept.png)  
