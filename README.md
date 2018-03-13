@@ -1,3 +1,6 @@
+# ATTHACK2017
+AT&amp;T Hackathon Honolulu 2017 Entry — **Won Most Technically Challenging Implementation!**
+
 ![](/art/demo.gif)  
 RFID reader in action (via [@aisis](https://www.github.com/aisis))  
 
